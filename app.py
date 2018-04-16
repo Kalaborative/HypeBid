@@ -4,6 +4,8 @@ from collections import Counter
 
 app = Flask(__name__)
 
+mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
+
 @app.route('/')
 def index():
 	return render_template('index.html')
