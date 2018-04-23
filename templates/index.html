@@ -19,9 +19,15 @@
 	      <li class="nav-item active">
 	        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 	      </li>
-	      <li class="nav-item">
-	        <a class="nav-link" href="#">Features</a>
-	      </li>
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="/logmeout">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        {% endif %}
 	      <li class="nav-item">
 	        <a class="nav-link" href="#">Pricing</a>
 	      </li>
@@ -45,14 +51,14 @@
             <div class="col-5" align="center">
                 <div class="card" style="padding: 1em;">
                   <h3 class="card-header">Time left: <div id="countdownExample"><div class="values"></div></div></h3>
-                  <img style="align-items: center; padding: 1em" src="static/img/headphones.jpg" alt="Card image" width="300px">
-                  <h3>Value: $30</h3>
+                  <img style="align-items: center; padding: 1em" src="static/img/speaker.jpg" alt="Card image" width="300px">
+                  <h3>Value: $300</h3>
                 </div>    
             </div>
             <div class="col">
                 <div class="card">
-                    <h2>SADES Spirit Wolf 7.1 Surround Stereo Sound USB Computer Gaming Headset</h2>
-                    <p>More clear sound gaming headset, with the strong brass, acoustic positioning precision, you can feel the full force of an explosion, a grenade blast, or a brostep drop.Glaring and breathing LED lights are designed on the earcups and microphone, highlighting the atmosphere of the game.</p>
+                    <h2>Libratone ZIPP Portable WiFi + Bluetooth Wireless Speaker</h2>
+                    <p>AMAZING SOUND: Our biggest and best sounding speaker featuring Libratone’s award winning signature sound that delivers deep bass, full midrange, crisp highs, 100-watts of power, and 360° FullRoom acoustics. WIFI and BLUETOOTH CONNECTIVITY: Use WiFi for longest range and high fidelity music quality, or Bluetooth to stream from any device. Also supports Airplay (iOS), AirPlay 2 (coming soon), DLNA (Android) and Spotify Connect.</p>
                     <ul class="nav nav-tabs" data-tabs="tabs">
                       <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab" href="#home">Rules</a>
