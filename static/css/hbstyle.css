@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+body {
+    background: #390040;
+    background-image: url(../img/geometric.png);
+    background-size: 100% 100%;
+    background-blend-mode: color-dodge;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+#main {
+    transition: background-color .5s;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    border-radius: 0px 31px 31px 0px;
+}
+
+.sidenav div {
+    padding: 8px;
+    text-decoration: none;
+/*    height: 6em;*/
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.btn-watch, .btn-join {
+    border-radius: 2em;
+    text-transform: uppercase;
+}
+
+.btn-watch {
+    background: #004346;
+    color: #B1EDE8;
+    margin-left: 7em;
+}
+
+.btn-watch:hover {
+    background: #032021;
+}
+
+.btn-join {
+    background: #74B3CE;
+    color: #FFFDFD;
+    font-weight: bold;
+}
+
+.btn-join:hover {
+    background: #8BD6F6;
+}
+
+.sideItem {
+    margin-bottom: 1em;
+}
+
+.sideItem img {
+    float: left;
+    margin-right: 10px;
+}
+
+.sideItemTitle {
+    display: block;
+    height: 42px;
+    margin-bottom: 10px;
+    line-height: 1em;
+    color: #74B3CE;
+}
+
+.sideItemUsers {
+    display: block;
+    color: #006DF0;
+}
+
+.sideItemUsers img {
+    margin-top: 3px;
+    margin-right: 2px;
+}
+
+.sidenav div:nth-of-type(1) {
+    color: aquamarine;
+    margin-top: 12px;
+    height: 1em;
+}
+
+.sidenav div:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    text-transform: uppercase;
+    font-size: 30px;
+
+}
+
+nav {
+    height: 80px;
+    border-bottom: 1px solid rgba(196, 196, 196, 0.5);
+}
+
+.nav-item {
+    margin: auto;
+}
+
+.navbar-brand {
+    margin-right: 0px;
+}
+
+#hypebidLogo {
+    padding: 0px;
+    margin-right: 5px;
+}
+
+#hypebidTitleText {
+    text-transform: uppercase;
+    margin: auto;
+    margin-right: 66rem;
+    color: #B1EDE8;
+}
+
+.itemdescBox {
+    margin-bottom: 1em;
+    border-radius: 5px !important;
+}
+
+.card {
+    background-color: transparent;
+}
+
+.card-body {
+    background-color: #4B0057;
+    color: #F4EFEF;
+}
+
+.nextText {
+    margin: 1em;
+    font-size: 24px;
+    color: #14F0BF;
+}
+
+.card-header {
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 5px;
+    background: #500961;
+    border: none;
+    color: #FDFDFD;
+}
+
+#descriptionColumn {
+    font-family: 'Roboto', sans-serif;
+}
+
+.itemTitleText {
+    font-size: 24px;
+    color: #B1EDE8;    
+}
+
+#navbarDropdown {
+    color: #B1EDE8;
+}
+
+.bidtext {
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.form-input {
+    display: block;
+    width: 100%;
+    height: 3em;
+    font-size: 24px;
+    color: #9E8E8E;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #9E8E8E;
+    margin-bottom: 10px;
+}
+
+.form-input:focus {
+    outline: none;
+}
+
+.gradientBg {
+    height: 383px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(142, 19, 158, 0.25) 0%, rgba(196, 196, 196, 0) 100%);
+}
+
+.whiteline {
+    width: 100%;
+    height: 0px;
+    border-top: 1px solid #FFEDED;
+}
+
+.placerbtn {
+    height: 61px;
+    border-radius: 2em;
+    background: #73098E;
+    box-shadow: 0px 5px 10px #430652;
+    font-size: 24px;
+    color: #FDFDFD;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0.03em;
+}
+
+.placerbtn:hover {
+    background: #540a54;
+}
+
+.placerbtn:focus {
+    box-shadow: none;
+}
+
+#gameinfo {
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+    margin-left: 10rem;
+}
+
+#gameinfo p {
+    font-size: 18px;
+    color: white;
+}
+
+.gameText {
+    text-transform: uppercase;
+}
+
+.gameID {
+    color: #63E2C6;  
+}
+
+.infobtn {
+    padding: 5px;
+}
+
+.countdownContainer {
+    width: 241px;
+    display: block;
+    height: 90px;
+    border: 4px solid #B1EDE8;
+    box-sizing: border-box;
+    border-radius: 40px;
+}
+
+.countdownContainer p, h2 {
+    padding-top: 6px;
+    margin-bottom: 0px;
+    color: white;
+}
+
+h2 {
+    color: #FF4444;
+}
+
+.platformbg {
+    background-image: url(../img/platform.png);
+    width: 445px;
+    height: 486px;
+}
+
+.profilePic {
+    margin: 10px 0;
+}
+
+.profilePic:first-of-type {
+    margin-top: 2rem;
+}
+
+#divideColumn {
+    max-width: 1%;
+}
+
+@keyframes float {
+  0% {
+    -webkit-transform: translatey(0px);
+            transform: translatey(0px);
+  }
+  50% {
+    -webkit-transform: translatey(-20px);
+            transform: translatey(-20px);
+  }
+  100% {
+    -webkit-transform: translatey(0px);
+            transform: translatey(0px);
+  }
+}
+
+hr {
+    background: rgba(196, 196, 196, 0.5);
+}
+
+#featuredItem {
+    margin-top: 4em;
+    transform: translatey(0px);
+    animation: float 3s ease-in-out infinite;   
+}
+
+.divider {
+    background: #74B3CE;
+    width: 10px;
+    height: 564px;
+    border-radius: 13px;
+}
