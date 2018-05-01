@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block head %}
+	{{ super() }}
+	<style type="text/css">
+		.grow { transition: all .2s ease-in-out; }
+		.grow:hover { transform: scale(0.95); }
+	</style>
+{% endblock %}
+{% block content %}
+	{{ super() }}
+		<div class="row">
+			<div class="col"><h1>Welcome to your admin panel, {{current_user.username}}!</h1></div>
+		</div>
+		<div class="row">
+				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
+				  <img class="card-img-top" src="../static/img/flatbot.png" alt="Card image">
+				  <div class="card-body">
+				    <h4 class="card-title">Bot Management</h4>
+				    <p class="card-text">Spawn bot accounts to your heart's content! (Or delete them all.)</p>
+				    <a href="/admin/{{current_user.username}}/botmanage" class="btn btn-primary">Open</a>
+				  </div>
+				</div>
+				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
+				  <img class="card-img-top" src="../static/img/usersgroup.png" alt="Card image">
+				  <div class="card-body">
+				    <h4 class="card-title">User administration</h4>
+				    <p class="card-text">View all user information in a comprehensive table format.</p>
+				    <a href="/admin/{{current_user.username}}/allusers" class="btn btn-primary">Open</a>
+				  </div>
+				</div>		
+		</div>
+{% endblock %}
+
+{% block foot %}
+	{{ super() }}
+{% endblock %}

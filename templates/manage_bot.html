@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block head %}
+	{{ super() }}
+{% endblock %}
+
+{% block content %}
+	{{ super() }}
+	<div class="row">
+		<div class="jumbotron">
+		  <h1 class="display-3">Let's cook up some bots!</h1>
+		  <p class="lead">Click the button below to create some bot users.</p>
+		  <p class="lead">
+			  <label for="selectSpawn">Number</label>
+		      <select class="form-control" id="selectSpawn">
+		        <option>2</option>
+		        <option>3</option>
+		        <option>4</option>
+		        <option>5</option>
+		        <option>6</option>
+		        <option>7</option>
+		        <option>8</option>
+		        <option>9</option>
+		        <option>10</option>
+		      </select>
+		  </p>
+		  <p class="lead">
+		    <a class="btn btn-info btn-lg" href="#" role="button" id="spawn">Spawn bot accounts</a> <p id="creation-status"></p>
+		  </p>
+		  <hr class="my-4">
+		  <p class="lead">Alternatively, you may click this button to delete all created bot users.</p>
+		  <p class="lead">
+		    <a class="btn btn-danger btn-lg" href="#" role="button" id="delete">Delete all bot accounts</a> <p id="deletion-status"></p>
+		  </p>
+		</div>
+	</div>
+{% endblock %}
+
+{% block foot %}
+	{{ super() }}
+	<script type="text/javascript">
+		var botCreationCounter;
+		var creationTarget;
+		var creationStatus = $("#creation-status");
+		var deletionStatus = $("#deletion-status");
+		var makeBot = function () {
+			$.ajax({
+				type: 'post',
+				url: '/makebot'
+			}).done( function() {
+				creationStatus.append('<img src="../../static/img/botcheck.png">');
+				botCreationCounter++;
+				if (botCreationCounter == creationTarget) {
+					setTimeout(function () {
+						creationStatus.html("<em>Creation successful.</em>");
+					}, 1000);
+				}
+			});
+		};
+		$(document).ready(function() {
+			var botAccounts;
+			setInterval( function () {
+				$.ajax({
+					type: 'post',
+					url: '/checkbots'
+				}).done( function(res) {
+					botAccounts = res['number'];
+				});
+			}, 500);
+			$("#spawn").click(function () {
+				botCreationCounter = 0;
+				creationTarget = $("#selectSpawn").val();
+				creationStatus.html('<img src="../../static/img/lava-lamp.gif"> <em>Creating...</em>');
+				for (var i = 0; i < creationTarget; i++) {
+					makeBot();
+				}
+			});
+
+			$("#delete").click(function () {
+				console.log(botAccounts);
+				deletionStatus.html(`<img src="../../static/img/lava-lamp.gif"> <em>Deleting ${botAccounts} bot accounts...</em>`);
+				$.ajax({
+					type: 'post',
+					url: '/deletebot'
+				}).done(function () {
+					deletionStatus.html('Done.');
+				}).fail(function () {
+					deletionStatus.html("There are no bot accounts created.");
+				});
+			});
+		});
+	</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% block head %}
+	<title>{% block title %}HypeBid - Admin Panel{% endblock %}</title>
+	<link rel="icon" type="image/png" sizes="192x192"  href="../static/img/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="../static/img/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../static/img/favicon-16x16.png">
+	<link rel="manifest" href="../static/img/manifest.json">
+	<meta name="theme-color" content="#ad13a8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/solar/bootstrap.min.css">
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css?family=Montserrat');
+		body {
+			font-family: 'Montserrat', sans-serif;
+		}
+	</style>
+	{% endblock %}
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 1em;">
+	  <a class="navbar-brand" href="/"><img src="../static/img/HypebidLogo.png" height="55" width="35"> HypeBid</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" style="">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarColor02">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item">
+	        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+	      </li>
+	      <li class="nav-item">
+	      	<a class="nav-link" href="/admin/{{current_user.username}}">Admin Panel</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="/logmeout">Logout</a>
+	      </li>
+	    </ul>
+	    <form class="form-inline my-2 my-lg-0">
+	      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+	      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+	    </form>
+	  </div>
+	</nav>
+	<div class="container">
+		{% block content %}
+		{% endblock %}
+	</div>
+
+
+	{% block foot %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    {% endblock %}
+</body>
+</html>
