@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask_wtf import FlaskForm
+# from flask_wtf import FlaskForm
 import re
 from datetime import datetime
-from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
+# from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 import sqlite3
@@ -21,18 +21,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
-class RegistrationForm(FlaskForm):
-	username = StringField('Username', [validators.Length(min=4, max=25)])
-	email = StringField('Email Address', [validators.Length(min=6, max=35)])
-	initialPw = PasswordField('Set password')
-	confirmPw = PasswordField('Confirm Password', [validators.EqualTo('initialPw', message="Passwords did not match.")])
-	accept_rules = BooleanField('I accept the site rules', [validators.InputRequired()])
-	submit = SubmitField("Send")
+# class RegistrationForm(FlaskForm):
+# 	username = StringField('Username', [validators.Length(min=4, max=25)])
+# 	email = StringField('Email Address', [validators.Length(min=6, max=35)])
+# 	initialPw = PasswordField('Set password')
+# 	confirmPw = PasswordField('Confirm Password', [validators.EqualTo('initialPw', message="Passwords did not match.")])
+# 	accept_rules = BooleanField('I accept the site rules', [validators.InputRequired()])
+# 	submit = SubmitField("Send")
 
-@app.route('/testregister')
-def testregister():
-	form = RegistrationForm()
-	return render_template("testlog.html", form=form)
+# @app.route('/testregister')
+# def testregister():
+# 	form = RegistrationForm()
+# 	return render_template("testlog.html", form=form)
 
 
 # Create our database model
@@ -184,4 +184,7 @@ def login():
 	return render_template('login.html')
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	# convention to run on Heroku
+	port = int(environ.get("PORT", 5000))
+	# run the app available anywhere on the network, on debug mode
+	app.run(host="0.0.0.0", port=port)
