@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_wtf import FlaskForm
 import re
+from datetime import datetime
 from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
@@ -11,6 +12,7 @@ from collections import Counter
 
 mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
 postgresqlURI = 'postgres://whzqfjyetabwob:9790172026c6cb7d14db26d59ef338d7a2d172efa4c9d0bfd853e2cac22a0d34@ec2-174-129-41-64.compute-1.amazonaws.com:5432/dfo5pf6eevk67m'
+# Heroku CLI PG PSQL Command: heroku pg:psql postgresql-curly-40771 --app hypebids-dev
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -39,10 +41,14 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(120), unique=True)
 	password = db.Column(db.String(120))
+	email = db.Column(db.String(150), unique=True)
+	creation_date = db.Column(db.String(50))
 
-	def __init__(self, username, password):
+	def __init__(self, username, password, email, creation_date):
 		self.username = username
 		self.password = password
+		self.email = email
+		self.creation_date = creation_date
 
 	def __repr__(self):
 		return '<User {}>'.format(self.username)
@@ -68,7 +74,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	return render_template('app.html')
 
 @app.route('/register', methods=["POST"])
 def register():
@@ -96,7 +102,8 @@ def register():
 			terms = request.form["agree"]
 		except:
 			return jsonify({"error": "You must accept our terms and conditions to register."})
-		user = User(newName, newPw)
+		registerDate = datetime.today().strftime("%x %X %p")
+		user = User(newName, newPw, registerEmail, registerDate)
 		db.session.add(user)
 		db.session.commit()
 		# return redirect(url_for('login', success_msg="Account creation success!"))
