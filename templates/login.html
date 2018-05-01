@@ -4,36 +4,88 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/solar/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/login.css">
 	<title>HypeBids</title>
 </head>
 <body>
-	<h1>Login</h1>
-	<form action="/logmein" method="post" autocomplete="off">
-		<input type="text" name="username" placeholder="Username">
-		<input type="password" name="password" placeholder="Password">
-		<button class="btn btn-primary" type="submit" id="submitLogin">Submit</button>
-	</form>
-	<h1>Register</h1>
-	<form action="/register" method="post" autocomplete="off">
-		<input type="text" name="username" placeholder="Enter a username.">
-		<input type="password" name="password" placeholder="Password">
-		<input type="password" name="passwordConf" placeholder="Confirm password">
-		<button class="btn btn-primary" type="submit" id="submitRegister">Submit</button>
-	</form>
-	{% if error_msg %}
-	<div class="alert alert-dismissible alert-danger">
-	  <button type="button" class="close" data-dismiss="alert">&times;</button>
-	  <strong>Oh snap!</strong> {{ error_msg }}
+	<div id="error_container"></div>
+	{% if success_msg %}
+	<div class="alert alert-dismissible alert-success">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		<strong>Hooray!</strong> {{ success_msg }}
 	</div>
 	{% endif %}
+	<div class="login-page">
+	  <div class="form">
+	    <form class="register-form" action="/register" method="post">
+	      <input type="text" name="registerUname" placeholder="Create a username" required="required">
+	      <input type="password" name="registerPw" placeholder="Set a password" required="required">
+	      <input type="password" name="confirmPw" placeholder="Type password again" required="required">
+	      <input type="text" name="email" placeholder="What's your email address?" required="required">
+	      <label for="agreeToTerms">By checking this box, you agree to the <a href="#">Terms and Conditions</a>.</label>
+	      <input type="checkbox" name="agree" id="agreeToTerms">
+	      <button>create</button>
+	      <p class="message">Already registered? <a href="#">Sign In</a></p>
+	    </form>
+	    <form class="login-form" action="/logmein" method="post">
+	      <input type="text" name="loginUname" placeholder="Username" required="required">
+	      <input type="password" name="loginPw" placeholder="Password" required="required">
+	      <button>Login</button>
+	      <p class="message">Not registered? <a href="#">Create an account</a></p>
+	    </form>
+	    <div id="loader"></div>
+	  </div>
+	</div>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script type="text/javascript">
+		$('.message a').click(function(){
+		   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+		});
 
+		$(".login-form").submit(function(e) {
+			$("#loader").html('<h4>Working <img src="static/img/ellipLoading.gif"></h4>');
+			e.preventDefault();
+			$.ajax({
+				type: 'post',
+				url: '/logmein',
+				data: $(".login-form").serialize()
+			}).done(function(res) {
+				var error = res['error'];
+				$("#loader").html("");
+				var alertBox = `<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Uh oh!</strong> ${error}</div>`;
+				if ( error ) {
+					$("#error_container").html(alertBox);
+				} else {
+					window.location.href = 'http://localhost:5000';
+				}
+			});
+		});
+
+		$(".register-form").submit(function(e) {
+			e.preventDefault();
+			$("#loader").html('<h4>Working <img src="static/img/ellipLoading.gif"></h4>');
+			$.ajax({
+				type: 'post',
+				url: '/register',
+				data: $(".register-form").serialize()
+			}).done(function(res) {
+				var error = res['error'];
+				$("#loader").html("");
+				var alertBox = `<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Uh oh!</strong> ${error}</div>`;
+				if ( error ) {
+					$("#error_container").html(alertBox);
+				} else {
+					var msg = res['message'];
+					alertBox = `<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Hooray! </strong> ${msg}</div>`;
+					$("#error_container").html(alertBox);
+				}
+			});
+		});
 	</script>
 </body>
 </html>

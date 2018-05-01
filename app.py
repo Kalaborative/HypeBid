@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_wtf import FlaskForm
+import re
+from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 import sqlite3
@@ -14,6 +17,21 @@ app.secret_key = urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = postgresqlURI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+
+class RegistrationForm(FlaskForm):
+	username = StringField('Username', [validators.Length(min=4, max=25)])
+	email = StringField('Email Address', [validators.Length(min=6, max=35)])
+	initialPw = PasswordField('Set password')
+	confirmPw = PasswordField('Confirm Password', [validators.EqualTo('initialPw', message="Passwords did not match.")])
+	accept_rules = BooleanField('I accept the site rules', [validators.InputRequired()])
+	submit = SubmitField("Send")
+
+@app.route('/testregister')
+def testregister():
+	form = RegistrationForm()
+	return render_template("testlog.html", form=form)
+
 
 # Create our database model
 class User(db.Model):
@@ -55,28 +73,58 @@ def index():
 @app.route('/register', methods=["POST"])
 def register():
 	if request.method == "POST":
-		newName = request.form["username"]
-		newPw = request.form["password"]
+		newName = request.form["registerUname"]
+		if len(newName) < 5:
+			# return render_template('login.html', error_msg="Username cannot be less than five characters.")
+			return jsonify({"error": "Username cannot be less than five characters."})
+		registeredUsers = User.query.all()
+		regUsernames = []
+		for r in registeredUsers:
+			regUsernames.append(r.username)
+		if newName in regUsernames:
+			return jsonify({"error": "This username is already taken. Sign in or use another one."})
+		newPw = request.form["registerPw"]
+		confirmPw = request.form["confirmPw"]
+		if newPw != confirmPw:
+			# return render_template('login.html', error_msg="Passwords must match.")
+			return jsonify({"error": "Passwords must match."})
+		registerEmail = request.form["email"]
+		if not EMAIL_REGEX.match(registerEmail):
+			# return render_template('login.html', error_msg="Please enter a valid email address.")
+			return jsonify({"error": "Please enter a valid email address."})
+		try:
+			terms = request.form["agree"]
+		except:
+			return jsonify({"error": "You must accept our terms and conditions to register."})
 		user = User(newName, newPw)
 		db.session.add(user)
 		db.session.commit()
-		login_user(user, remember=True)
-		return redirect(url_for('index'))
+		# return redirect(url_for('login', success_msg="Account creation success!"))
+		# return render_template('login.html', success_msg="Account creation successful!")
+		return jsonify({"message": "Account creation successful! Please sign in."})
 
 @app.route('/logmein', methods=["POST"])
 def logmein():
 	if request.method == "POST":
-		loginName = request.form["username"]
-		loginPw = request.form["password"]
+		loginName = request.form["loginUname"]
+		loginPw = request.form["loginPw"]
+		if len(loginName) < 5:
+			# return render_template('login.html', error_msg="Username cannot be less than five characters.")
+			return jsonify({"error": "Username cannot be less than five characters."})
 		user = User.query.filter_by(username=loginName).first()
 		if user:
-			user.authenticated = True
-			db.session.add(user)
-			db.session.commit()
-			login_user(user, remember=True)
-			return redirect(url_for('index'))
+			if user.password == loginPw:	
+				user.authenticated = True
+				db.session.add(user)
+				db.session.commit()
+				login_user(user, remember=True)
+				return redirect(url_for('index'))
+			else:
+				# return render_template('login.html', error_msg="Wrong password.")
+				return jsonify({"error": "Wrong password."})
 		else:
-			return render_template('login.html', error_msg="Invalid credentials.")
+			# return render_template('login.html', error_msg="Invalid credentials.")
+			return jsonify({"error": "Invalid username."})
 
 @app.route('/logmeout')
 @login_required
