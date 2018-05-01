@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 
 {% block head %}
-	{{ super() }}
+	<title>{% block title %}HypeBid - Admin Panel{% endblock %}</title>
+	<link rel="icon" type="image/png" sizes="192x192"  href="../../static/img/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="../../static/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="../../static/img/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="../../static/img/favicon-16x16.png">
+	<link rel="manifest" href="../static/img/manifest.json">
+	<meta name="theme-color" content="#ad13a8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/solar/bootstrap.min.css">
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css?family=Montserrat');
+		body {
+			font-family: 'Montserrat', sans-serif;
+		}
+	</style>
 
+{% endblock %}
+{% block nav_brand %}
+	<a class="navbar-brand" href="/"><img src="../../static/img/HypebidLogo.png" height="55" width="35"> HypeBid</a>
 {% endblock %}
 {% block content %}
 	{{ super() }}
