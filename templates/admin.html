@@ -7,6 +7,9 @@
 		.grow:hover { transform: scale(0.95); }
 	</style>
 {% endblock %}
+{% block nav_brand %}
+	{{ super () }}
+{% endblock %}
 {% block content %}
 	{{ super() }}
 		<div class="row">
@@ -14,7 +17,7 @@
 		</div>
 		<div class="row">
 				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
-				  <img class="card-img-top" src="../static/img/flatbot.png" alt="Card image">
+				  <img class="card-img-top" src="../static/img/flatbot.PNG" alt="Card image">
 				  <div class="card-body">
 				    <h4 class="card-title">Bot Management</h4>
 				    <p class="card-text">Spawn bot accounts to your heart's content! (Or delete them all.)</p>
@@ -22,7 +25,7 @@
 				  </div>
 				</div>
 				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
-				  <img class="card-img-top" src="../static/img/usersgroup.png" alt="Card image">
+				  <img class="card-img-top" src="../static/img/usersgroup.PNG" alt="Card image">
 				  <div class="card-body">
 				    <h4 class="card-title">User administration</h4>
 				    <p class="card-text">View all user information in a comprehensive table format.</p>
