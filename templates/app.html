@@ -88,11 +88,9 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% if current_user.is_authenticated %}
               <a class="dropdown-item" href="/logmeout">Log Out</a>
+              <a class="dropdown-item" href="/admin/{{current_user.username}}">Admin Panel</a>
               {% else %}
               <a class="dropdown-item" href="/login">Login</a>
-              {% endif %}
-              {% if current_user.isadmin %}
-              <a class="dropdown-item" href="/admin/{{current_user.username}}">Admin Panel</a>
               {% endif %}
               <a class="dropdown-item" href="#">Another action</a>
               <div class="dropdown-divider"></div>

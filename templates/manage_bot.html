@@ -102,9 +102,7 @@
 					type: 'post',
 					url: '/deletebot'
 				}).done(function () {
-					setTimeout(function () {
-						deletionStatus.html('Done.');
-					}, 1000);
+					deletionStatus.html('Done.');
 				}).fail(function () {
 					deletionStatus.html("There are no bot accounts created.");
 				});
