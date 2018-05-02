@@ -253,5 +253,5 @@ if __name__ == "__main__":
 	# convention to run on Heroku
 	port = int(environ.get("PORT", 5000))
 	# run the app available anywhere on the network, on debug mode
-	app.run(host="0.0.0.0", port=port, debug=True)
+	app.run(host="0.0.0.0", port=port, debug=True, ssl_context=('chained.pem', 'private.key'))
 	# app.run(debug=True)
