@@ -46,13 +46,15 @@ class User(db.Model):
 	email = db.Column(db.String(150), unique=True)
 	creation_date = db.Column(db.String(50))
 	isdummy = db.Column(db.Boolean())
+	isadmin = db.Column(db.Boolean())
 
-	def __init__(self, username, password, email, creation_date, isdummy):
+	def __init__(self, username, password, email, creation_date, isdummy, isadmin):
 		self.username = username
 		self.password = password
 		self.email = email
 		self.creation_date = creation_date
 		self.isdummy = isdummy
+		self.isadmin = isadmin
 
 	def __repr__(self):
 		return '<User {}>'.format(self.username)
@@ -83,7 +85,7 @@ def index():
 @app.route('/admin/<username>')
 @login_required
 def admin(username):
-	if username == current_user.username:
+	if current_user.isadmin:
 		return render_template('admin.html')
 	else:
 		return "Sorry, you don't have permission to view this page."
@@ -91,7 +93,7 @@ def admin(username):
 @app.route("/admin/<username>/botmanage")
 @login_required
 def manage_bot(username):
-	if username == current_user.username:
+	if current_user.isadmin:
 		return render_template('manage_bot.html')
 	else:
 		return abort(403)
@@ -107,7 +109,7 @@ def makebot():
 		botPw = botName[4:]
 		botEmail = "{}@testbot.com".format(botName)
 		botCreation = datetime.today().strftime("%x %X %p")
-		bot = User(botName, botPw, botEmail, botCreation, True)
+		bot = User(botName, botPw, botEmail, botCreation, True, False)
 		db.session.add(bot)
 		db.session.commit()
 		return jsonify({"status": "OK"})
@@ -158,7 +160,7 @@ def register():
 		except:
 			return jsonify({"error": "You must accept our terms and conditions to register."})
 		registerDate = datetime.today().strftime("%x %X %p")
-		user = User(newName, newPw, registerEmail, registerDate, False)
+		user = User(newName, newPw, registerEmail, registerDate, False, False)
 		db.session.add(user)
 		db.session.commit()
 		# return redirect(url_for('login', success_msg="Account creation success!"))
@@ -237,7 +239,7 @@ def getAll():
 @app.route('/admin/<username>/allusers')
 @login_required
 def allUsers(username):
-	if username == current_user.username:
+	if current_user.isadmin:
 		dbUsers = User.query.all()
 		return render_template('manage_users.html', accounts=dbUsers)
 	else:
