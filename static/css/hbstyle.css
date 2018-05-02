@@ -139,10 +139,13 @@ nav {
 #hypebidTitleText {
     text-transform: uppercase;
     margin: auto;
-    margin-right: 66rem;
+    /*margin-right: 66rem;*/
     color: #B1EDE8;
 }
 
+.dropdown {
+    padding-right: 4px;
+}
 
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -227,6 +230,10 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     border-top: 1px solid #FFEDED;
 }
 
+.biddercolumn {
+    padding: 0 !important;
+}
+
 .placerbtn {
     height: 61px;
     border-radius: 2em;
@@ -249,12 +256,26 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 #gameinfo {
     margin-top: 1rem;
     margin-bottom: 3rem;
-    margin-left: 10rem;
+/*    margin-left: 10rem;*/
 }
 
 #gameinfo p {
     font-size: 18px;
     color: white;
+}
+
+.navbar-nav .dropdown-menu {
+    position: absolute;
+}
+
+@media (max-width: 767px) {
+     .infobuttons {
+        text-align: -webkit-center;
+    }
+
+    .biddercolumn {
+        display: none;
+    }
 }
 
 .gameText {
@@ -292,9 +313,13 @@ h2 {
     background-image: url(../img/platform.png);
     width: 445px;
     height: 486px;
+    max-width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .profilePic {
+    display: block;
     margin: 10px 0;
 }
 

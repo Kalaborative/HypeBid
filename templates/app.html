@@ -56,7 +56,7 @@
     </div>
 
     <div id="main">
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light flex-row flex-md-row">
         <ul class="navbar-nav">
             <li class="nav-item">
             <img src="static/img/leftarrow.png" data-toggle="tooltip" data-placement="bottom" title="More Games" style="cursor: pointer;" onclick="openNav()">
@@ -65,20 +65,18 @@
         <a class="navbar-brand" href="#">
             <img src="static/img/HypebidLogo.png" width="35" height="55" alt="logo" id="hypebidLogo">
         </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav">
           <li class="nav-item active">
             <a class="nav-link" href="#" id="hypebidTitleText">HypeBid <span class="sr-only">(current)</span></a>
           </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          {% if current_user.is_authenticated %}
           <li class="nav-item">
-                {% if current_user.is_authenticated %}
                 <img src="static/img/usericon.png" width="50" height="55">
-                {% endif %}
           </li>
+          {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% if current_user.is_authenticated %}
@@ -98,27 +96,28 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
-          </li>
+          </li>        
+        </ul>
+        <ul class="navbar-nav">
             <li class="nav-item">
                 <img src="static/img/help.png" >
             </li>
         </ul>
-      </div>
     </nav>
     
     <div class="container-fluid">
         <div class="row" id="gameinfo">
-            <div class="col-4">
+            <div class="col-lg-5 col-md-6 col-sm-12" align="center">
                    <p class="gameText">Game | <span class="gameID">334289430</span></p>     
             </div>
-            <div class="col">
+            <div class="col infobuttons">
                 <a href="https://google.com" class="infobtn"><img src="static/img/share.png"></a>
                 <a href="https://google.com" class="infobtn"><img src="static/img/report.png"></a>
                 <a href="https://google.com" class="infobtn"><img src="static/img/info.png"></a>
             </div>
         </div>
         <div class="row">
-            <div class="col" align="center">
+            <div class="col-lg-4 col-sm-12" align="center">
                 <div class="countdownContainer">
                     <p>Time Left:</p>
                     <h2 id="countdownStopwatch"></h2>
@@ -127,7 +126,7 @@
                     <img src="static/img/wirelessSpeaker.png" width="216" height="216" id="featuredItem">
                 </div>
             </div>
-            <div class="col-1">
+            <div class="col-1 biddercolumn">
                 <p class="bidtext">BIDDERS</p>
                 <div class="whiteline"></div>
                 <div class="gradientBg" align=center>
@@ -204,7 +203,7 @@ Portable WiFi and Bluetooth Speaker With Amazon Alexa</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-lg-6 col-sm-12">
                 <div class="form-group">
                   <div class="form-group">
                     <div class="input-group">
@@ -215,7 +214,7 @@ Portable WiFi and Bluetooth Speaker With Amazon Alexa</h3>
                 {# <input type="text" placeholder="Enter Your Bid Here..." class="form-input"> #}
                 <button class="btn btn-block placerbtn">Place My Bid!</button>
             </div>
-            <div class="col" align="right">
+            <div class="col-lg-6 col-sm-12" align="right">
                 <h5 class="nextText">Next Game <img src="static/img/rightarrow.png"></h5>
             </div>
         </div>
