@@ -7,7 +7,7 @@ from selenium import webdriver
 bot_id = generate_bot()
 
 def test_setup():
-	driver.get("http://localhost:5000/login")
+	driver.get("https://localhost:5000/login")
 	driver.implicitly_wait(30)
 	page = driver.find_element_by_class_name('login-page')
 	assert page
