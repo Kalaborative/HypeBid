@@ -98,10 +98,6 @@ def manage_bot(username):
 	else:
 		return abort(403)
 
-@app.route('/.well-known/acme-challenge/0loVw881ncAco8Q9IwVtWrTeEDqopXQAE6W2Ag9CS58')
-def static_file():
-	return app.send_static_file('0loVw881ncAco8Q9IwVtWrTeEDqopXQAE6W2Ag9CS58')
-
 @app.route('/makebot', methods=["POST"])
 def makebot():
 	if request.method == "POST":
