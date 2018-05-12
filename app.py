@@ -38,6 +38,16 @@ EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
 
 # Create our database model
+assoc1 = db.Table("association1", 
+	db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+	db.Column('item_id', db.Integer, db.ForeignKey('items.id'))
+	)
+
+assoc2 = db.Table("association2",
+	db.Column('item_id', db.Integer, db.ForeignKey('items.id')),
+	db.Column('bid_id', db.Integer, db.ForeignKey('bids.id'))
+	)
+
 class User(db.Model):
 	__tablename__ = "users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -47,6 +57,8 @@ class User(db.Model):
 	creation_date = db.Column(db.String(50))
 	isdummy = db.Column(db.Boolean())
 	isadmin = db.Column(db.Boolean())
+	bidItems = db.relationship('Item', secondary=assoc1, lazy='subquery', backref=db.backref('bidders', lazy=True))
+
 
 	def __init__(self, username, password, email, creation_date, isdummy, isadmin):
 		self.username = username
@@ -70,6 +82,23 @@ class User(db.Model):
 
 	def is_anonymous(self):
 		return False
+
+class Item(db.Model):
+	__tablename__ = "items"
+	id = db.Column(db.Integer, primary_key=True)
+	game_ID = db.Column(db.Integer)
+	bids = db.relationship('Bid', secondary=assoc2, lazy='subquery', backref=db.backref('ppl_bidding', lazy=True))
+
+	def __init__(self, game_ID):
+		self.game_ID = game_ID
+
+class Bid(db.Model):
+	__tablename__ = "bids"
+	id = db.Column(db.Integer, primary_key=True)
+	bid_amt = db.Column(db.String(120))
+
+	def __init__(self, bid_amt):
+		self.bid_amt = bid_amt
 
 login_manager = LoginManager()
 login_manager.init_app(app)
