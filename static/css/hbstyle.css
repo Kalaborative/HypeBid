@@ -27,7 +27,7 @@ body {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     top: 0;
     left: 0;
     background-color: #111;
@@ -118,7 +118,11 @@ body {
 
 
 
-nav {
+.navbar {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    background: #350343;
     height: 80px;
     border-bottom: 1px solid rgba(196, 196, 196, 0.5);
 }
@@ -219,6 +223,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 }
 
 .gradientBg {
+    position: absolute;
     height: 383px;
     width: 100%;
     background: linear-gradient(180deg, rgba(142, 19, 158, 0.25) 0%, rgba(196, 196, 196, 0) 100%);
