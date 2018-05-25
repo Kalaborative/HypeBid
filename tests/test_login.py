@@ -43,13 +43,13 @@ def test_login_success():
 	driver.find_element_by_xpath('//form[@class="login-form"]/button').click()
 	sleep(2)
 	btn = driver.find_element_by_class_name('w-button').text
-	assert "Logout" in accountInfo
+	assert "Logout" in btn
 
 def test_logout():
-	driver.find_element_by_link_text("Log Out").click()
+	driver.find_element_by_link_text("Logout").click()
 	sleep(2)
 	btn = driver.find_element_by_class_name('w-button').text
-	assert "Login" in accountInfo
+	assert "Login" in btn
 
 def test_teardown():
 	assert True
