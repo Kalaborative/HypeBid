@@ -5,8 +5,12 @@ from datetime import datetime
 from randomNameGen import generate_bot
 # from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
+from random import choice
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 import sqlite3
+from werkzeug.utils import secure_filename
+from bidfuncs import getValidItemIDs, addItem
+from pymongo import MongoClient
 from os import environ, urandom
 from collections import Counter
 
@@ -14,14 +18,20 @@ from collections import Counter
 mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
 postgresqlURI = 'postgres://whzqfjyetabwob:9790172026c6cb7d14db26d59ef338d7a2d172efa4c9d0bfd853e2cac22a0d34@ec2-174-129-41-64.compute-1.amazonaws.com:5432/dfo5pf6eevk67m'
 # Heroku CLI PG PSQL Command: heroku pg:psql postgresql-curly-40771 --app hypebids-dev
+FILE_UPLOAD_TEMP_DIR = "/itemUploads/"
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = postgresqlURI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = FILE_UPLOAD_TEMP_DIR
 db = SQLAlchemy(app)
 EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # class RegistrationForm(FlaskForm):
 # 	username = StringField('Username', [validators.Length(min=4, max=25)])
@@ -38,16 +48,6 @@ EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
 
 # Create our database model
-assoc1 = db.Table("association1", 
-	db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-	db.Column('item_id', db.Integer, db.ForeignKey('items.id'))
-	)
-
-assoc2 = db.Table("association2",
-	db.Column('item_id', db.Integer, db.ForeignKey('items.id')),
-	db.Column('bid_id', db.Integer, db.ForeignKey('bids.id'))
-	)
-
 class User(db.Model):
 	__tablename__ = "users"
 	id = db.Column(db.Integer, primary_key=True)
@@ -57,7 +57,6 @@ class User(db.Model):
 	creation_date = db.Column(db.String(50))
 	isdummy = db.Column(db.Boolean())
 	isadmin = db.Column(db.Boolean())
-	bidItems = db.relationship('Item', secondary=assoc1, lazy='subquery', backref=db.backref('bidders', lazy=True))
 
 
 	def __init__(self, username, password, email, creation_date, isdummy, isadmin):
@@ -83,23 +82,6 @@ class User(db.Model):
 	def is_anonymous(self):
 		return False
 
-class Item(db.Model):
-	__tablename__ = "items"
-	id = db.Column(db.Integer, primary_key=True)
-	game_ID = db.Column(db.Integer)
-	bids = db.relationship('Bid', secondary=assoc2, lazy='subquery', backref=db.backref('ppl_bidding', lazy=True))
-
-	def __init__(self, game_ID):
-		self.game_ID = game_ID
-
-class Bid(db.Model):
-	__tablename__ = "bids"
-	id = db.Column(db.Integer, primary_key=True)
-	bid_amt = db.Column(db.String(120))
-
-	def __init__(self, bid_amt):
-		self.bid_amt = bid_amt
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -109,7 +91,20 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-	return render_template('app.html')
+	gameIDs = getValidItemIDs()
+	return render_template('homepage.html', allgames=gameIDs)
+
+@app.route("/game/<int:game_id>")
+@login_required
+def game(game_id):
+	gameIDs = getValidItemIDs()
+	if game_id in gameIDs:
+		client = MongoClient(mongodbURI)
+		data = client.hypeBidDB.items
+		results = data.find_one({'item_id': game_id})
+		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'])
+	else:
+		return abort(404)
 
 @app.route('/admin/<username>')
 @login_required
@@ -156,6 +151,23 @@ def deletebot():
 			db.session.delete(d)
 			db.session.commit()
 		return jsonify({"status": "OK"})		
+
+@app.route("/addnewitem", methods=["POST"])
+def addnewitem():
+	if request.method == "POST":
+		nItemName = request.form["itemName"]
+		nItemDesc = request.form["itemDesc"]
+		nItemVal = request.form["itemValue"]
+		nums = [0,1,2,3,4,5,6,7,8,9]
+		chosenNums = []
+		for i in range(9):
+			n = choice(nums)
+			chosenNums.append(str(n))
+		uniqueID = "".join(chosenNums)
+		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc)
+		if res:
+			return render_template("newitemform.html", statusmsg=uniqueID)
+
 
 
 @app.route('/register', methods=["POST"])
@@ -267,6 +279,14 @@ def allUsers(username):
 	if current_user.isadmin:
 		dbUsers = User.query.all()
 		return render_template('manage_users.html', accounts=dbUsers)
+	else:
+		abort(403)
+
+@app.route('/admin/<username>/makenewitem')
+@login_required
+def makeNewItem(username):
+	if current_user.isadmin:
+		return render_template("newitemform.html", statusmsg=None)
 	else:
 		abort(403)
 

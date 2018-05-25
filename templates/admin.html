@@ -31,6 +31,14 @@
 				    <p class="card-text">View all user information in a comprehensive table format.</p>
 				    <a href="/admin/{{current_user.username}}/allusers" class="btn btn-primary">Open</a>
 				  </div>
+				</div>
+				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
+				  <img class="card-img-top" src="../static/img/creation.png" alt="Card image">
+				  <div class="card-body">
+				    <h4 class="card-title">New Item Creation</h4>
+				    <p class="card-text">Easily make new games using a simple form.</p>
+				    <a href="/admin/{{current_user.username}}/makenewitem" class="btn btn-primary">Open</a>
+				  </div>
 				</div>		
 		</div>
 {% endblock %}

@@ -10,11 +10,11 @@ def listAllItems():
 		results.append(item['item_id'])
 	return results
 
-def addItem(newItemId):
+def addItem(newItemId, newItemName, newItemValue, newItemDesc):
 	"""Adds a new item with item ID starting with item_."""
 	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
 	data = client.hypeBidDB.items
-	newItemDict = {"item_id": newItemId, 'users_bidding': []}
+	newItemDict = {"item_id": int(newItemId), 'users_bidding': [], 'item_name': newItemName, 'item_value': newItemValue, 'item_desc': newItemDesc, "end_time": "", "max_bid": 5.0}
 	data.insert_one(newItemDict)
 	return True
 
