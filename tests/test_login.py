@@ -42,15 +42,14 @@ def test_login_success():
 	loginPw.send_keys("guest")
 	driver.find_element_by_xpath('//form[@class="login-form"]/button').click()
 	sleep(2)
-	accountInfo = driver.find_element_by_id('navbarDropdown').text
-	assert "Guest" in accountInfo
+	btn = driver.find_element_by_class_name('w-button').text
+	assert "Logout" in accountInfo
 
 def test_logout():
-	driver.find_element_by_id('navbarDropdown').click()
 	driver.find_element_by_link_text("Log Out").click()
 	sleep(2)
-	accountInfo = driver.find_element_by_id('navbarDropdown').text
-	assert "Account" in accountInfo
+	btn = driver.find_element_by_class_name('w-button').text
+	assert "Login" in accountInfo
 
 def test_teardown():
 	assert True
