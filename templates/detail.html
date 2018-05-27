@@ -125,7 +125,7 @@
                     <h2 id="countdownStopwatch"></h2>
                 </div>
                 <div class="platformbg">
-                    <img src="../static/img/wirelessSpeaker.png" width="216" height="216" id="featuredItem">
+                    <img src="{{ItemImage}}" width="216" height="216" id="featuredItem">
                 </div>
             </div>
             <div class="col-1 biddercolumn">
@@ -193,7 +193,7 @@
 
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                               <div class="card-body">
-                                  The maximum bid in this game is ${{ItemMaxBid}}.
+                                  The maximum bid in this game is $<span id="maxBidFloat">{{ItemMaxBid}}</span>.
                               </div>
                             </div>
                           </div>
@@ -254,17 +254,22 @@
 
             $('.placerbtn').click(function() {
                 var bidAmt = $("#bidInput").val();
+                var maxBid = $("#maxBidFloat").html();
                 var currentGame = $(".gameID").html();
-                var payload = {"game": currentGame, "bid": bidAmt}
-                $.ajax({
-                  type: "POST",
-                  url: '/submitBid',
-                  data: JSON.stringify(payload),
-                  contentType: 'application/json',
-                  dataType: 'json'        
-                }).done(function () {
-                  alert("Bid was successful!");
-                });
+                var payload = {"game": currentGame, "bid": bidAmt};
+                if (parseFloat(bidAmt) > parseFloat(maxBid)) {
+                  alert('Bid cannot be higher than ' + maxBid + "!");
+                } else {
+                  $.ajax({
+                    type: "POST",
+                    url: '/submitBid',
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json',
+                    dataType: 'json'        
+                  }).done(function () {
+                    alert("Bid was successful!");
+                  });
+                }
             });
         });
     </script>

@@ -12,6 +12,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 from bidfuncs import getValidItemIDs, addItem, addBid, listItemBids, calculate_winning_bid, clearAllBids
 from pymongo import MongoClient
 from maxbidcalc import determine_max_bid
+from s3 import uploadToS3
 from os import environ, urandom
 from collections import Counter
 
@@ -19,7 +20,7 @@ from collections import Counter
 mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
 postgresqlURI = 'postgres://whzqfjyetabwob:9790172026c6cb7d14db26d59ef338d7a2d172efa4c9d0bfd853e2cac22a0d34@ec2-174-129-41-64.compute-1.amazonaws.com:5432/dfo5pf6eevk67m'
 # Heroku CLI PG PSQL Command: heroku pg:psql postgresql-curly-40771 --app hypebids-dev
-FILE_UPLOAD_TEMP_DIR = "static/img"
+FILE_UPLOAD_TEMP_DIR = "itemUploads"
 
 
 app = Flask(__name__)
@@ -104,7 +105,7 @@ def game(game_id):
 		client = MongoClient(mongodbURI)
 		data = client.hypeBidDB.items
 		results = data.find_one({'item_id': game_id})
-		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'], ItemMaxBid=results['max_bid'])
+		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'], ItemMaxBid=results['max_bid'], ItemImage=results['item_img'])
 	else:
 		return abort(404)
 
@@ -160,6 +161,8 @@ def addnewitem():
 		nItemName = request.form["itemName"]
 		nItemDesc = request.form["itemDesc"]
 		nItemVal = request.form["itemValue"]
+		nImage = photos.save(request.files['itemImg'])
+		nImageUrl = uploadToS3(nImage)
 		nums = [0,1,2,3,4,5,6,7,8,9]
 		chosenNums = []
 		for i in range(9):
@@ -167,7 +170,7 @@ def addnewitem():
 			chosenNums.append(str(n))
 		uniqueID = "".join(chosenNums)
 		nItemMaxBid = determine_max_bid(nItemVal)
-		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc, nItemMaxBid)
+		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc, nItemMaxBid, nImageUrl)
 		if res:
 			return render_template("newitemform.html", statusmsg=uniqueID)
 		else:
@@ -178,7 +181,7 @@ def submitBid():
 	if request.method == "POST":
 		uname = current_user.username
 		current_game = int(request.json['game'])
-		ubid = float(request.json['bid'])
+		ubid = round(float(request.json['bid']), 2)
 		addBid(current_game, uname, ubid)
 		return jsonify({"status": "OK"})
 
