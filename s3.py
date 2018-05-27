@@ -1,10 +1,7 @@
 import boto3
-from os import environ
+from credentials import ACCESS_KEY, SECRET_KEY
 
-environ['AWS_SHARED_CREDENTIALS_FILE'] = "~/HypeBid/.aws/credentials"
-environ['AWS_CONFIG_FILE'] = "~/HypeBid/.aws/config"
-
-s3 = boto3.resource('s3')
+s3 = boto3.resource('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
 
 def uploadToS3(filename):
 	data = open('itemUploads/{}'.format(filename), 'rb')
