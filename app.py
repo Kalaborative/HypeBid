@@ -102,6 +102,16 @@ def index():
 	gameIDs = getValidItemIDs()
 	return render_template('homepage.html', allgames=gameIDs)
 
+@app.route('/games')
+@login_required
+def games():
+	client = MongoClient(mongodbURI)
+	data = client.hypeBidDB.items
+	gameInfo = []
+	for d in data.find():
+		gameInfo.append([d['item_name'], len(d['users_bidding']), d['item_id']])
+	return render_template('gamelist.html', games=gameInfo)
+
 @app.route("/game/<int:game_id>")
 @login_required
 def game(game_id):
@@ -239,7 +249,7 @@ def logmein():
 				db.session.add(user)
 				db.session.commit()
 				login_user(user, remember=True)
-				return redirect(url_for('index'))
+				return jsonify({"status": "OK"})
 			else:
 				# return render_template('login.html', error_msg="Wrong password.")
 				return jsonify({"error": "Wrong password."})
@@ -252,34 +262,6 @@ def logmein():
 def logmeout():
 	logout_user()
 	return redirect(url_for('index'))
-
-@app.route('/done')
-def done():
-	with sqlite3.connect('bids.db') as connection:
-		c = connection.cursor()
-		c.execute("SELECT * FROM bidData")
-		allData = c.fetchall()
-		dataDict = {}
-		for a, b in allData:
-			dataDict[a] = int(b)
-
-		c = Counter(dataDict.values())
-		winningBid = [item for item, count in Counter(c).items() if count == 1]
-		print(winningBid)
-
-		for a, b in dataDict.items():
-			if b == min(winningBid):
-				print("Winner is {}.".format(a))
-
-		return redirect(url_for('index'))
-
-@app.route("/getAll")
-def getAll():
-	with sqlite3.connect('bids.db') as connection:
-		c = connection.cursor()
-		c.execute("SELECT * FROM bidData")
-		allData = c.fetchall()
-		return render_template('results.html', data=allData)
 
 @app.route('/admin/<username>/allusers')
 @login_required
@@ -339,6 +321,15 @@ def calculateWinner():
 def clearBids():
 	if request.method == "POST":
 		clearAllBids()
+		return jsonify({"status": "OK"})
+
+@app.route('/deletegame', methods=["POST"])
+def deleteGame():
+	if request.method == "POST":
+		formGameID = int(request.json['game'])
+		client = MongoClient(mongodbURI)
+		data = client.hypeBidDB.items
+		data.delete_one({"item_id": formGameID})
 		return jsonify({"status": "OK"})
 
 @app.route('/login')
