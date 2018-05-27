@@ -42,8 +42,11 @@ def test_login_success():
 	loginPw.send_keys("guest")
 	driver.find_element_by_xpath('//form[@class="login-form"]/button').click()
 	sleep(2)
-	btn = driver.find_element_by_class_name('w-button').text
-	assert "Logout" in btn
+	navLinks = driver.find_elements_by_xpath('//*[@id="navbarColor02"]//a')
+	navText = []
+	for nav in navLinks:
+		navText.append(nav.text)
+	assert "Logout" in navText
 
 def test_logout():
 	driver.find_element_by_link_text("Logout").click()
