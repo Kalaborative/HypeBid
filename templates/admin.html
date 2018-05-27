@@ -39,6 +39,14 @@
 				    <p class="card-text">Easily make new games using a simple form.</p>
 				    <a href="/admin/{{current_user.username}}/makenewitem" class="btn btn-primary">Open</a>
 				  </div>
+				</div>
+				<div class="card text-white mb-3 grow" style="max-width: 20rem; background-color: #0ea9b0;">
+				  <img class="card-img-top" src="../static/img/trophy.jpg" alt="Card image">
+				  <div class="card-body">
+				    <h4 class="card-title">Game Simulation</h4>
+				    <p class="card-text">Take a game through a test run by playing with bots!</p>
+				    <a href="/admin/{{current_user.username}}/simulatebidding" class="btn btn-primary">Open</a>
+				  </div>
 				</div>		
 		</div>
 {% endblock %}

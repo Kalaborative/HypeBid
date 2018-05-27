@@ -5,12 +5,13 @@ from datetime import datetime
 from randomNameGen import generate_bot
 # from wtforms import Form, BooleanField, StringField, validators, SubmitField, PasswordField
 from flask_sqlalchemy import SQLAlchemy
-from random import choice
+from random import choice, uniform
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 import sqlite3
-from werkzeug.utils import secure_filename
-from bidfuncs import getValidItemIDs, addItem
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+from bidfuncs import getValidItemIDs, addItem, addBid, listItemBids, calculate_winning_bid, clearAllBids
 from pymongo import MongoClient
+from maxbidcalc import determine_max_bid
 from os import environ, urandom
 from collections import Counter
 
@@ -18,17 +19,18 @@ from collections import Counter
 mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
 postgresqlURI = 'postgres://whzqfjyetabwob:9790172026c6cb7d14db26d59ef338d7a2d172efa4c9d0bfd853e2cac22a0d34@ec2-174-129-41-64.compute-1.amazonaws.com:5432/dfo5pf6eevk67m'
 # Heroku CLI PG PSQL Command: heroku pg:psql postgresql-curly-40771 --app hypebids-dev
-FILE_UPLOAD_TEMP_DIR = "/itemUploads/"
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+FILE_UPLOAD_TEMP_DIR = "static/img"
 
 
 app = Flask(__name__)
+photos = UploadSet('photos', IMAGES)
 app.secret_key = urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = postgresqlURI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = FILE_UPLOAD_TEMP_DIR
+app.config['UPLOADED_PHOTOS_DEST'] = FILE_UPLOAD_TEMP_DIR
 db = SQLAlchemy(app)
 EMAIL_REGEX = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+configure_uploads(app, photos)
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -102,7 +104,7 @@ def game(game_id):
 		client = MongoClient(mongodbURI)
 		data = client.hypeBidDB.items
 		results = data.find_one({'item_id': game_id})
-		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'])
+		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'], ItemMaxBid=results['max_bid'])
 	else:
 		return abort(404)
 
@@ -164,11 +166,21 @@ def addnewitem():
 			n = choice(nums)
 			chosenNums.append(str(n))
 		uniqueID = "".join(chosenNums)
-		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc)
+		nItemMaxBid = determine_max_bid(nItemVal)
+		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc, nItemMaxBid)
 		if res:
 			return render_template("newitemform.html", statusmsg=uniqueID)
+		else:
+			return "Failed to make a new item."
 
-
+@app.route("/submitBid", methods=["POST"])
+def submitBid():
+	if request.method == "POST":
+		uname = current_user.username
+		current_game = int(request.json['game'])
+		ubid = float(request.json['bid'])
+		addBid(current_game, uname, ubid)
+		return jsonify({"status": "OK"})
 
 @app.route('/register', methods=["POST"])
 def register():
@@ -233,18 +245,6 @@ def logmeout():
 	logout_user()
 	return redirect(url_for('index'))
 
-
-@app.route('/addbid', methods=["POST"])
-def addbid():
-	if request.method == "POST":
-		newName = request.form["staticName"]
-		newBid = request.form["bid"]
-		print("Name: {}, Bid: {}".format(newName, newBid))
-		with sqlite3.connect('bids.db') as connection:
-			c = connection.cursor()
-			c.execute('INSERT INTO bidData VALUES (?, ?)', (newName, newBid))
-		return redirect(url_for("index"))
-
 @app.route('/done')
 def done():
 	with sqlite3.connect('bids.db') as connection:
@@ -289,6 +289,49 @@ def makeNewItem(username):
 		return render_template("newitemform.html", statusmsg=None)
 	else:
 		abort(403)
+
+@app.route("/admin/<username>/simulatebidding")
+@login_required
+def simulateBidding(username):
+	if current_user.isadmin:
+		gameIDs = getValidItemIDs()
+		bids = listItemBids()
+		return render_template("simbids.html", allgames=gameIDs, bids=bids)
+	else:
+		abort(403)
+
+@app.route("/runsimulation", methods=["POST"])
+def runSimulation():
+	if request.method == "POST":
+		allDummies = User.query.filter(User.isdummy == True)
+		if allDummies.first():
+			botlist = []
+			for dummy in allDummies:
+				botlist.append(dummy.username)
+			formGameID = int(request.json['game'])
+			client = MongoClient(mongodbURI)
+			data = client.hypeBidDB.items
+			maxBid = data.find_one({"item_id": formGameID})['max_bid']
+			maxBidFloat = float(maxBid)
+			for b in botlist:
+				randBid = round(uniform(0.01, maxBidFloat), 2)
+				addBid(formGameID, b, randBid)
+			return jsonify({"success": "Simulation complete!", "error": False})
+		else:
+			return jsonify({"success": False, "error": "No dummy accounts located."})
+
+@app.route("/calculatewinner", methods=["POST"])
+def calculateWinner():
+	if request.method == "POST":
+		formGameID = int(request.json['game'])
+		winner = calculate_winning_bid(formGameID)
+		return jsonify({"status": winner})
+
+@app.route("/clearbids", methods=["POST"])
+def clearBids():
+	if request.method == "POST":
+		clearAllBids()
+		return jsonify({"status": "OK"})
 
 @app.route('/login')
 def login():

@@ -10,11 +10,11 @@ def listAllItems():
 		results.append(item['item_id'])
 	return results
 
-def addItem(newItemId, newItemName, newItemValue, newItemDesc):
+def addItem(newItemId, newItemName, newItemValue, newItemDesc, newItemMaxBid):
 	"""Adds a new item with item ID starting with item_."""
 	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
 	data = client.hypeBidDB.items
-	newItemDict = {"item_id": int(newItemId), 'users_bidding': [], 'item_name': newItemName, 'item_value': newItemValue, 'item_desc': newItemDesc, "end_time": "", "max_bid": 5.0}
+	newItemDict = {"item_id": int(newItemId), 'users_bidding': [], 'item_name': newItemName, 'item_value': newItemValue, 'item_desc': newItemDesc, "end_time": "", "max_bid": newItemMaxBid}
 	data.insert_one(newItemDict)
 	return True
 
@@ -29,6 +29,8 @@ def getValidItemIDs():
 
 def addBid(chosenItem, username, bid):
 	"""Adds a bid to them item given its item ID, username, and bid amount."""
+	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
+	data = client.hypeBidDB.items
 	validgameIDs = getValidItemIDs()
 	if chosenItem in validgameIDs:
 		match = False
@@ -39,7 +41,6 @@ def addBid(chosenItem, username, bid):
 		try:
 			bid = float(bid)
 			if match:
-				print("This person already has a bet. This will overwrite the original bet.")
 				data.update_one({'item_id': chosenItem, 'users_bidding.user_name': username}, {"$set": {'users_bidding.$.user_bid': bid}})
 				return True
 			else:
@@ -71,6 +72,8 @@ def clearAllBids():
 
 def calculate_winning_bid(chosenItem):
 	"""Returns the user with the winning bid given a valid Item ID."""
+	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
+	data = client.hypeBidDB.items
 	validgameIDs = getValidItemIDs()
 	if chosenItem in validgameIDs:
 		biddingList = [i['users_bidding'] for i in data.find() if i['item_id'] == chosenItem][0]
@@ -80,6 +83,8 @@ def calculate_winning_bid(chosenItem):
 
 		c = Counter(dataDict.values())
 		winningBid = [item for item, count in Counter(c).items() if count == 1]
+
+		winresults = None
 
 		for a, b in dataDict.items():
 			if b == min(winningBid):

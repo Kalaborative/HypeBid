@@ -62,13 +62,13 @@
             <img src="../static/img/leftarrow.png" data-toggle="tooltip" data-placement="bottom" title="More Games" style="cursor: pointer;" onclick="openNav()">
             </li>
         </ul>
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img src="../static/img/HypebidLogo.png" width="35" height="55" alt="logo" id="hypebidLogo">
         </a>
 
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#" id="hypebidTitleText">HypeBid <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/" id="hypebidTitleText">HypeBid <span class="sr-only">(current)</span></a>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -193,7 +193,7 @@
 
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                               <div class="card-body">
-                                  The maximum bid in this game is $5.00.
+                                  The maximum bid in this game is ${{ItemMaxBid}}.
                               </div>
                             </div>
                           </div>
@@ -208,7 +208,7 @@
                 <div class="form-group">
                   <div class="form-group">
                     <div class="input-group">
-                      <input class="form-input" type="number" min="0.01" step="0.01" max="2500" placeholder="Enter Your Bid Here..." style="overflow: hidden">
+                      <input class="form-input" type="number" min="0.01" step="0.01" max="2500" placeholder="Enter Your Bid Here..." style="overflow: hidden" id="bidInput">
                     </div>
                   </div>
                 </div>
@@ -250,6 +250,21 @@
             $(".profilePic").draggable({
               containment: bgContainer,
               axis: 'y'
+            });
+
+            $('.placerbtn').click(function() {
+                var bidAmt = $("#bidInput").val();
+                var currentGame = $(".gameID").html();
+                var payload = {"game": currentGame, "bid": bidAmt}
+                $.ajax({
+                  type: "POST",
+                  url: '/submitBid',
+                  data: JSON.stringify(payload),
+                  contentType: 'application/json',
+                  dataType: 'json'        
+                }).done(function () {
+                  alert("Bid was successful!");
+                });
             });
         });
     </script>
