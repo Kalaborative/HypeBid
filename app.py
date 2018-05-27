@@ -20,6 +20,11 @@ from collections import Counter
 mongodbURI = 'mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test'
 postgresqlURI = 'postgres://whzqfjyetabwob:9790172026c6cb7d14db26d59ef338d7a2d172efa4c9d0bfd853e2cac22a0d34@ec2-174-129-41-64.compute-1.amazonaws.com:5432/dfo5pf6eevk67m'
 # Heroku CLI PG PSQL Command: heroku pg:psql postgresql-curly-40771 --app hypebids-dev
+
+# Pymongo Shell Commands:
+# client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
+# data = client.hypeBidDB.items
+
 FILE_UPLOAD_TEMP_DIR = "itemUploads"
 
 

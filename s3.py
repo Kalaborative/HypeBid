@@ -1,7 +1,9 @@
 import boto3
-from credentials import ACCESS_KEY, SECRET_KEY
+from credentials import access_key, secret_key, region
 
-s3 = boto3.resource('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
+session = boto3.Session(aws_access_key_id=access_key, aws_secret_access_key=secret_key, region_name=region)
+
+s3 = session.resource('s3')
 
 def uploadToS3(filename):
 	data = open('itemUploads/{}'.format(filename), 'rb')
