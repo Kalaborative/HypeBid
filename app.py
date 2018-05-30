@@ -210,8 +210,8 @@ def register():
 		registeredUsers = User.query.all()
 		regUsernames = []
 		for r in registeredUsers:
-			regUsernames.append(r.username)
-		if newName in regUsernames:
+			regUsernames.append(r.username.lower())
+		if newName.lower() in regUsernames:
 			return jsonify({"error": "This username is already taken. Sign in or use another one."})
 		newPw = request.form["registerPw"]
 		confirmPw = request.form["confirmPw"]
@@ -222,6 +222,11 @@ def register():
 		if not EMAIL_REGEX.match(registerEmail):
 			# return render_template('login.html', error_msg="Please enter a valid email address.")
 			return jsonify({"error": "Please enter a valid email address."})
+		regEmails = []
+		for r in registeredUsers:
+			regEmails.append(r.email.lower())
+		if registerEmail.lower() in regEmails:
+			return jsonify({"error": "This email is already being used. Please sign in."})
 		try:
 			terms = request.form["agree"]
 		except:

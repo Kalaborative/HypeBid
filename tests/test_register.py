@@ -80,6 +80,16 @@ def test_bad_email_3():
 	driver.find_element_by_xpath('//button[@class="close"]').click()
 	assert "valid email address" in alertMsg
 
+def test_already_registered_email():
+	newEmail = driver.find_element_by_xpath('(//form[@class="register-form"]/input)[4]')
+	newEmail.clear()
+	newEmail.send_keys("wackydawg411@gmail.com")
+	driver.find_element_by_xpath('//form[@class="register-form"]/button').click()
+	sleep(2)
+	alertMsg = driver.find_element_by_class_name('alert-danger').text
+	driver.find_element_by_xpath('//button[@class="close"]').click()
+	assert "email is already being used" in alertMsg
+
 def test_decline_terms():
 	newEmail = driver.find_element_by_xpath('(//form[@class="register-form"]/input)[4]')
 	newEmail.clear()
