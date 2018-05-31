@@ -49,11 +49,6 @@ def allowed_file(filename):
 # 	accept_rules = BooleanField('I accept the site rules', [validators.InputRequired()])
 # 	submit = SubmitField("Send")
 
-# @app.route('/testregister')
-# def testregister():
-# 	form = RegistrationForm()
-# 	return render_template("testlog.html", form=form)
-
 
 # Create our database model
 class User(db.Model):
@@ -294,6 +289,10 @@ def simulateBidding(username):
 		return render_template("simbids.html", allgames=gameIDs, bids=bids)
 	else:
 		abort(403)
+
+@app.route('/signup')
+def testRegister():
+	return render_template('register.html')
 
 @app.route("/runsimulation", methods=["POST"])
 def runSimulation():

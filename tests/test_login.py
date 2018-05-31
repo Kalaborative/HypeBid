@@ -6,7 +6,7 @@ driver = webdriver.Chrome()
 def test_setup():
 	driver.get("http://localhost:5000/login")
 	driver.implicitly_wait(30)
-	page = driver.find_element_by_class_name('login-page')
+	page = driver.find_element_by_class_name('login-form')
 	assert page
 
 def test_less_than_five():

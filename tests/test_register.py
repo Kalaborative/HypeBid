@@ -7,15 +7,10 @@ from selenium import webdriver
 bot_id = generate_bot()
 
 def test_setup():
-	driver.get("http://localhost:5000/login")
+	driver.get("http://localhost:5000/signup")
 	driver.implicitly_wait(30)
-	page = driver.find_element_by_class_name('login-page')
+	page = driver.find_element_by_class_name('register-form')
 	assert page
-
-def test_register_section():
-	driver.find_element_by_link_text("Create an account").click()
-	registerForm = driver.find_element_by_class_name('register-form')
-	assert registerForm
 
 def test_username_too_short():
 	inputFields = driver.find_elements_by_xpath('//form[@class="register-form"]/input')
