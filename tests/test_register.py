@@ -96,7 +96,7 @@ def test_decline_terms():
 	assert "accept our terms and conditions to register" in alertMsg
 
 def test_successful_register():
-	terms = driver.find_element_by_xpath('(//form[@class="register-form"]/input)[5]')
+	terms = driver.find_element_by_id("agreeToTerms")
 	terms.click()
 	driver.find_element_by_xpath('//form[@class="register-form"]/button').click()
 	sleep(2)
