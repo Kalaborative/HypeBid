@@ -115,7 +115,8 @@ def game(game_id):
 		client = MongoClient(mongodbURI)
 		data = client.hypeBidDB.items
 		results = data.find_one({'item_id': game_id})
-		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], ItemValue=results['item_value'], ItemMaxBid=results['max_bid'], ItemImage=results['item_img'])
+		return render_template("detail.html", gameid=results['item_id'], ItemName=results['item_name'], ItemDesc=results['item_desc'], 
+			ItemValue=results['item_value'], ItemMaxBid=results['max_bid'], ItemImage=results['item_img'], ItemEndTime=results['end_time'])
 	else:
 		return abort(404)
 
@@ -173,6 +174,7 @@ def addnewitem():
 		nItemVal = request.form["itemValue"]
 		nImage = photos.save(request.files['itemImg'])
 		nImageUrl = uploadToS3(nImage)
+		nItemEndDate = request.form['itemdatetime']
 		nums = [0,1,2,3,4,5,6,7,8,9]
 		chosenNums = []
 		for i in range(9):
@@ -180,7 +182,7 @@ def addnewitem():
 			chosenNums.append(str(n))
 		uniqueID = "".join(chosenNums)
 		nItemMaxBid = determine_max_bid(nItemVal)
-		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc, nItemMaxBid, nImageUrl)
+		res = addItem(uniqueID, nItemName, nItemVal, nItemDesc, nItemMaxBid, nImageUrl, nItemEndDate)
 		if res:
 			return render_template("newitemform.html", statusmsg=uniqueID)
 		else:
