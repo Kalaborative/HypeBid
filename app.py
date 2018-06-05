@@ -222,6 +222,8 @@ def register():
 		regEmails = []
 		for r in registeredUsers:
 			regEmails.append(r.email.lower())
+		print(regEmails)
+		print(registerEmail.lower())
 		if registerEmail.lower() in regEmails:
 			return jsonify({"error": "This email is already being used. Please sign in."})
 		try:
@@ -229,6 +231,7 @@ def register():
 		except:
 			return jsonify({"error": "You must accept our terms and conditions to register."})
 		registerDate = datetime.today().strftime("%x %X %p")
+		newName = newName.lower()
 		user = User(newName, newPw, registerEmail, registerDate, False, False)
 		db.session.add(user)
 		db.session.commit()
@@ -244,6 +247,7 @@ def logmein():
 		if len(loginName) < 5:
 			# return render_template('login.html', error_msg="Username cannot be less than five characters.")
 			return jsonify({"error": "Username cannot be less than five characters."})
+		loginName = loginName.lower()
 		user = User.query.filter_by(username=loginName).first()
 		if user:
 			if user.password == loginPw:	

@@ -1,4 +1,4 @@
-from test_login import driver
+from test_a_login import driver
 from time import sleep
 from randomNameGen import generate_bot
 from selenium import webdriver
@@ -105,5 +105,4 @@ def test_successful_register():
 	assert "creation successful" in alertMsg
 
 def test_teardown():
-	driver.quit()
 	assert True

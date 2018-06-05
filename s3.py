@@ -9,5 +9,5 @@ def uploadToS3(filename):
 	s3 = session.resource('s3')
 	data = open('itemUploads/{}'.format(filename), 'rb')
 	s3.Bucket('hypebid-uploads').put_object(Key=filename, Body=data)
-	url = 'https://s3.us-east-2.amazonaws.com/hypebid-uploads/{}'.format(filename)
+	url = 'https://s3.us-east-2.amazonaws.com/hypebid-upload/{}'.format(filename)
 	return url
