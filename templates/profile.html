@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>HypeBid — {{current_user.username}}</title>
+	<title>HypeBid — {{profUser.username}}</title>
 	<link rel="icon" type="image/png" sizes="192x192"  href="../static/img/android-icon-192x192.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="96x96" href="../static/img/favicon-96x96.png">
@@ -49,10 +49,10 @@
 		<div class="row">
 			<div class="col-4">
 				<img src="../static/img/blank.png">
-				<p><strong>Joined </strong>{{current_user.creation_date}}</p>
+				<p><strong>Joined </strong>{{profUser.creation_date}}</p>
 			</div>
 			<div class="col">
-				<h1>{{current_user.username}}</h1>
+				<h1>{{profUser.username}}</h1>
 				<div id="accordion">
 					{% for h in history %}
 					  <div class="card">

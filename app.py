@@ -291,8 +291,9 @@ def makeNewItem(username):
 @login_required
 def profile(username):
 	if userIsValid(username):
+		profileUser = User.query.filter(User.username == username.lower()).first()
 		userBidHistory = getBidHistory(username.lower())
-		return render_template('profile.html', history=userBidHistory)
+		return render_template('profile.html', history=userBidHistory, profUser=profileUser)
 
 @app.route("/admin/<username>/simulatebidding")
 @login_required

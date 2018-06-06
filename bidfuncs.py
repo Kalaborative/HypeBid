@@ -42,17 +42,21 @@ def addBid(chosenItem, username, bid):
 		try:
 			bid = float(bid)
 			if match:
+				print("Match was found, updating")
 				data.update_one({'item_id': chosenItem, 'users_bidding.user_name': username}, {"$set": {'users_bidding.$.user_bid': bid}})
 				hist.update_one({"username": username, 'history.game_id': chosenItem}, {"$push": {'history.$.bids': bid} })
 				return True
 			else:
+				print("No match, checking if user has a history")
 				newBidData = {"user_name": username, "user_bid": bid}
 				data.update_one({'item_id': chosenItem}, {"$push": {"users_bidding": newBidData}})
 				inHist = hist.find_one({"username": username})
+				selectBid = {"game_id": chosenItem, 'bids': [bid]}
 				if inHist:
-					selectBid = {"game_id": chosenItem, 'bids': [bid]}
+					print("User has a history, updating")
 					hist.update_one({"username": username}, {"$push": {"history": selectBid}})
 				else:
+					print("No history. Adding new entry")
 					newHistEntry = {"username": username, "history": [selectBid]}
 					hist.insert_one(newHistEntry)
 				return True
