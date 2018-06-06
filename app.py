@@ -223,10 +223,8 @@ def register():
 			# return render_template('login.html', error_msg="Please enter a valid email address.")
 			return jsonify({"error": "Please enter a valid email address."})
 		regEmails = []
-		for r in registeredUsers:
+		for r in User.query.all():
 			regEmails.append(r.email.lower())
-		print(regEmails)
-		print(registerEmail.lower())
 		if registerEmail.lower() in regEmails:
 			return jsonify({"error": "This email is already being used. Please sign in."})
 		try:
