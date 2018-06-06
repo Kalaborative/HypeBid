@@ -9,7 +9,7 @@ from random import choice, uniform
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 import sqlite3
 from flask_uploads import UploadSet, configure_uploads, IMAGES
-from bidfuncs import getValidItemIDs, addItem, addBid, listItemBids, calculate_winning_bid, clearAllBids
+from bidfuncs import getValidItemIDs, addItem, addBid, listItemBids, calculate_winning_bid, clearAllBids, getBidHistory
 from pymongo import MongoClient
 from maxbidcalc import determine_max_bid
 from s3 import uploadToS3
@@ -91,6 +91,13 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
 	return User.query.filter_by(username=user_id).first()
+
+def userIsValid(name):
+	registeredUsers = User.query.all()
+	regUsernames = []
+	for r in registeredUsers:
+		regUsernames.append(r.username.lower())
+	return name.lower() in regUsernames
 
 @app.route('/')
 def index():
@@ -204,11 +211,7 @@ def register():
 		if len(newName) < 5:
 			# return render_template('login.html', error_msg="Username cannot be less than five characters.")
 			return jsonify({"error": "Username cannot be less than five characters."})
-		registeredUsers = User.query.all()
-		regUsernames = []
-		for r in registeredUsers:
-			regUsernames.append(r.username.lower())
-		if newName.lower() in regUsernames:
+		if userIsValid(newName.lower()):
 			return jsonify({"error": "This username is already taken. Sign in or use another one."})
 		newPw = request.form["registerPw"]
 		confirmPw = request.form["confirmPw"]
@@ -285,6 +288,13 @@ def makeNewItem(username):
 		return render_template("newitemform.html", statusmsg=None)
 	else:
 		abort(403)
+
+@app.route('/user/<username>')
+@login_required
+def profile(username):
+	if userIsValid(username):
+		userBidHistory = getBidHistory(username.lower())
+		return render_template('profile.html', history=userBidHistory)
 
 @app.route("/admin/<username>/simulatebidding")
 @login_required

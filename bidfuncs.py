@@ -31,6 +31,7 @@ def addBid(chosenItem, username, bid):
 	"""Adds a bid to them item given its item ID, username, and bid amount."""
 	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
 	data = client.hypeBidDB.items
+	hist = client.hypeBidDB.userbids
 	validgameIDs = getValidItemIDs()
 	if chosenItem in validgameIDs:
 		match = False
@@ -42,16 +43,22 @@ def addBid(chosenItem, username, bid):
 			bid = float(bid)
 			if match:
 				data.update_one({'item_id': chosenItem, 'users_bidding.user_name': username}, {"$set": {'users_bidding.$.user_bid': bid}})
+				hist.update_one({"username": username, 'history.game_id': chosenItem}, {"$push": {'history.$.bids': bid} })
 				return True
 			else:
 				newBidData = {"user_name": username, "user_bid": bid}
 				data.update_one({'item_id': chosenItem}, {"$push": {"users_bidding": newBidData}})
+				inHist = hist.find_one({"username": username})
+				if inHist:
+					selectBid = {"game_id": chosenItem, 'bids': [bid]}
+					hist.update_one({"username": username}, {"$push": {"history": selectBid}})
+				else:
+					newHistEntry = {"username": username, "history": [selectBid]}
+					hist.insert_one(newHistEntry)
 				return True
 		except:
-			print("You entered an invalid bid. Please enter it in a decimal form.")
 			return False
 	else:
-		print("That item ID is invalid. Please try again.")
 		return False
 
 def listItemBids():
@@ -69,6 +76,18 @@ def clearAllBids():
 	data = client.hypeBidDB.items
 	data.update_many({}, {"$set": {"users_bidding": []}})
 	return True
+
+def getBidHistory(username):
+	"""Returns a dict of the username's bidding history by game."""
+	client = MongoClient("mongodb+srv://HBDB_User:DTfjUidPbZfAhdlF@hypebiddb-xkxgt.mongodb.net/test")
+	hist = client.hypeBidDB.userbids
+	result = hist.find_one({"username": username})
+	if result:
+		gameHistory = result['history']
+		return gameHistory
+	else:
+		return False
+
 
 def calculate_winning_bid(chosenItem):
 	"""Returns the user with the winning bid given a valid Item ID."""

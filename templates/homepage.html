@@ -50,16 +50,6 @@
             <div class="hero-subtitle">The online bidding platform with a gaming experience.</div>
             <br>
             {% if current_user.is_authenticated %}<a href="/logmeout" class="button big w-button">Logout</a>{% else %}<a href="/login" class="button big w-button">Login</a>{% endif %}<a href="#" class="button big w-button">Learn More</a></div>
-            <br>
-            {% if current_user.is_authenticated %}
-            <div class="list-group">
-                {% for game in allgames %}
-              <a href="/game/{{game}}" class="list-group-item list-group-item-action">
-                Game {{game}}
-              </a>
-                {% endfor %}
-            </div>
-            {% endif %}
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://uploads-ssl.webflow.com/5b086dc3a4315acb2194befe/js/webflow.1d620cbd2.js" type="text/javascript"></script>

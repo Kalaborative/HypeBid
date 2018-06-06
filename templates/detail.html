@@ -94,7 +94,7 @@
               {% if current_user.isadmin %}
               <a class="dropdown-item" href="/admin/{{current_user.username}}">Admin Panel</a>
               {% endif %}
-              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="/user/{{current_user.username}}">My Profile</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
