@@ -13,7 +13,7 @@ from bidfuncs import getValidItemIDs, addItem, addBid, listItemBids, calculate_w
 from pymongo import MongoClient
 from maxbidcalc import determine_max_bid
 from s3 import uploadToS3
-from os import environ, urandom
+from os import environ, urandom, remove
 from collections import Counter
 
 
@@ -101,8 +101,7 @@ def userIsValid(name):
 
 @app.route('/')
 def index():
-	gameIDs = getValidItemIDs()
-	return render_template('homepage.html', allgames=gameIDs)
+	return render_template('homepage.html')
 
 @app.route('/games')
 @login_required
@@ -183,8 +182,11 @@ def addnewitem():
 		nImageUrl = uploadToS3(nImage)
 		nItemEndDate = request.form['itemdatetime']
 		nums = [0,1,2,3,4,5,6,7,8,9]
+		num_no_zero = nums[1:]
 		chosenNums = []
-		for i in range(9):
+		startNum = choice(num_no_zero)
+		chosenNums.append(str(startNum))
+		for i in range(8):
 			n = choice(nums)
 			chosenNums.append(str(n))
 		uniqueID = "".join(chosenNums)
@@ -293,7 +295,13 @@ def profile(username):
 	if userIsValid(username):
 		profileUser = User.query.filter(User.username == username.lower()).first()
 		userBidHistory = getBidHistory(username.lower())
-		return render_template('profile.html', history=userBidHistory, profUser=profileUser)
+		if userBidHistory:
+			return render_template('profile.html', history=userBidHistory, profUser=profileUser)
+		else:
+			userBidHistory = []
+			return render_template('profile.html', history=userBidHistory, profUser=profileUser)
+	else:
+		return abort(404)
 
 @app.route("/admin/<username>/simulatebidding")
 @login_required
