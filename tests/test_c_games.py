@@ -43,4 +43,5 @@ def test_make_good_bid():
 	assert "successful" in result_text
 
 def test_teardown():
+	driver.switch_to_alert().accept()
 	assert 1
