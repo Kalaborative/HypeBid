@@ -1,19 +1,10 @@
 [
-  "tests/test_login.py::test_setup",
-  "tests/test_login.py::test_less_than_five",
-  "tests/test_login.py::test_invalid_username",
-  "tests/test_login.py::test_wrong_password",
-  "tests/test_login.py::test_login_success",
-  "tests/test_login.py::test_logout",
-  "tests/test_login.py::test_teardown",
-  "tests/test_register.py::test_setup",
-  "tests/test_register.py::test_register_section",
-  "tests/test_register.py::test_username_too_short",
-  "tests/test_register.py::test_mismatching_pw",
-  "tests/test_register.py::test_bad_email_1",
-  "tests/test_register.py::test_bad_email_2",
-  "tests/test_register.py::test_bad_email_3",
-  "tests/test_register.py::test_decline_terms",
-  "tests/test_register.py::test_successful_register",
-  "tests/test_register.py::test_teardown"
+  "tests/test_d_newgame.py::test_setup",
+  "tests/test_d_newgame.py::test_on_newitem_page",
+  "tests/test_d_newgame.py::test_new_item",
+  "tests/test_d_newgame.py::test_gameID_extracted",
+  "tests/test_d_newgame.py::test_folder_remained_empty",
+  "tests/test_d_newgame.py::test_game_created",
+  "tests/test_d_newgame.py::test_delete_testgame",
+  "tests/test_d_newgame.py::test_teardown"
 ]
